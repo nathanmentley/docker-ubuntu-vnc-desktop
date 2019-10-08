@@ -106,7 +106,7 @@ RUN cd /src/web \
 # merge
 ################################################################################
 FROM system
-LABEL maintainer="fcwu.tw@gmail.com"
+LABEL maintainer="nathanmentley@gmail.com"
 
 COPY --from=builder /src/web/dist/ /usr/local/lib/web/frontend/
 COPY rootfs /

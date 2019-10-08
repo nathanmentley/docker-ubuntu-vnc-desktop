@@ -6,7 +6,7 @@ TAG   ?= latest
 # you can choose other base image versions
 IMAGE ?= ubuntu:18.04
 # choose from supported flavors (see available ones in ./flavors/*.yml)
-FLAVOR ?= lxde
+FLAVOR ?= i3
 # armhf or amd64
 ARCH ?= amd64
 

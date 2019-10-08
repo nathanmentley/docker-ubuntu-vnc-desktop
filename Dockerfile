@@ -70,6 +70,10 @@ ARG TINI_VERSION=v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-amd64 /bin/tini
 RUN chmod +x /bin/tini
 
+# Install certs
+COPY certs/*.crt /usr/local/share/ca-certificates/
+RUN chmod 644 /usr/local/share/ca-certificates/*.crt && update-ca-certificates
+
 # vim
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \

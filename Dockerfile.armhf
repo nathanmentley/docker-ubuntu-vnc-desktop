@@ -108,7 +108,7 @@ RUN cd /src/web/dist/static/novnc && patch -p0 < /src/web/novnc-armhf-1.patch
 # merge
 ################################################################################
 FROM system
-LABEL maintainer="fcwu.tw@gmail.com"
+LABEL maintainer="nathanmentley@gmail.com"
 
 COPY --from=builder /src/web/dist/ /usr/local/lib/web/frontend/
 COPY rootfs /
