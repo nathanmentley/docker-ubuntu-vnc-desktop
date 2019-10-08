@@ -60,7 +60,6 @@ RUN apt-get update \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
-
  
 # Additional packages require ~600MB
 # libreoffice  pinta language-pack-zh-hant language-pack-gnome-zh-hant firefox-locale-zh-hant libreoffice-l10n-zh-tw
@@ -73,6 +72,11 @@ RUN chmod +x /bin/tini
 # Install certs
 COPY certs/*.crt /usr/local/share/ca-certificates/
 RUN chmod 644 /usr/local/share/ca-certificates/*.crt && update-ca-certificates
+
+# fonts
+RUN apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated \
+        fonts-opendyslexic
 
 # vim
 RUN apt update \
@@ -108,6 +112,18 @@ RUN wget https://downloads.slack-edge.com/linux_releases/slack-desktop-4.0.2-amd
     && apt install -y --no-install-recommends --allow-unauthenticated ./slack-desktop-*.deb \
     && rm ./slack-desktop-*.deb
 
+# language pack
+RUN apt-get install -y locales locales-all
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+# gnome-terminal
+RUN apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated \
+        gnome-terminal \
+        at-spi2-core
+
 # docker
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
@@ -125,7 +141,6 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/* /tmp/a.txt /tmp/b.txt
-
 
 ################################################################################
 # builder

@@ -28,6 +28,7 @@ run:
 		-v ${PWD}/home:/home/nmentley \
 		-v //var/run/docker.sock:/var/run/docker.sock \
 		-e USER=nmentley -e PASSWORD=$(PASSWORD) \
+		-e RESOLUTION=1920x1080 \
 		-e ALSADEV=hw:2,0 \
 		-e SSL_PORT=443 \
 		-e RELATIVE_URL_ROOT=approot \
