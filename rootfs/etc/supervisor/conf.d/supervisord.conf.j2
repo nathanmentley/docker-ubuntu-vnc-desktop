@@ -70,6 +70,15 @@ user=%USER%
 environment=DISPLAY=":1",HOME="%HOME%",USER="%USER%"
 {% endif %}
 
+{% if desktop == "i3" %}
+
+[program:wm]
+priority=15
+command=i3
+environment=DISPLAY=":1",HOME="/home/nmentley",USER="nmentley"
+
+{% endif %}
+
 [program:xvfb]
 priority=10
 command=/usr/local/bin/xvfb.sh

@@ -1,7 +1,7 @@
 .PHONY: build run
 
 # Default values for variables
-REPO  ?= dorowu/ubuntu-desktop-lxde-vnc
+REPO  ?= nathanmentley/docker-ubuntu-vnc-desktop
 TAG   ?= latest
 # you can choose other base image versions
 IMAGE ?= ubuntu:18.04
@@ -9,6 +9,8 @@ IMAGE ?= ubuntu:18.04
 FLAVOR ?= lxde
 # armhf or amd64
 ARCH ?= amd64
+
+PASSWORD ?= password
 
 # These files will be generated from teh Jinja templates (.j2 sources)
 templates = Dockerfile rootfs/etc/supervisor/conf.d/supervisord.conf
@@ -23,18 +25,19 @@ run:
 	docker run --rm \
 		-p 6080:80 -p 6081:443 \
 		-v ${PWD}:/src:ro \
-		-e USER=doro -e PASSWORD=mypassword \
+		-v ${PWD}/home:/home/nmentley \
+		-e USER=nmentley -e PASSWORD=$(PASSWORD) \
 		-e ALSADEV=hw:2,0 \
 		-e SSL_PORT=443 \
 		-e RELATIVE_URL_ROOT=approot \
 		-v ${PWD}/ssl:/etc/nginx/ssl \
 		--device /dev/snd \
-		--name ubuntu-desktop-lxde-test \
+		--name ubuntu-desktop-$(FLAVOR) \
 		$(REPO):$(TAG)
 
 # Connect inside the running container for debugging
 shell:
-	docker exec -it ubuntu-desktop-lxde-test bash
+	docker exec -it ubuntu-desktop-$(FLAVOR) bash
 
 # Generate the SSL/TLS config for HTTPS
 gen-ssl:
