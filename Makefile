@@ -32,6 +32,7 @@ run:
 		-e RELATIVE_URL_ROOT=approot \
 		-v ${PWD}/ssl:/etc/nginx/ssl \
 		--device /dev/snd \
+		--net=host \
 		--name ubuntu-desktop-$(FLAVOR) \
 		$(REPO):$(TAG)
 

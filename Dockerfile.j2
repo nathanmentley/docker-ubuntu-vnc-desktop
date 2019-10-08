@@ -70,12 +70,28 @@ RUN apt update \
 {%endif%} 
 {%if desktop == "i3" %}
 RUN add-apt-repository ppa:kgilmer/regolith-stable \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends --allow-unauthenticated \
+    && apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated \
         regolith-desktop \
     && apt autoclean -y \
     && apt autoremove -y \
     && rm -rf /var/lib/apt/lists/*
+
+RUN add-apt-repository ppa:codejamninja/jam-os \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends --allow-unauthenticated \
+        polybar \
+    && apt autoclean -y \
+    && apt autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends --allow-unauthenticated \
+        nitrogen \
+    && apt autoclean -y \
+    && apt autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
 {%endif%} 
 # Additional packages require ~600MB
 # libreoffice  pinta language-pack-zh-hant language-pack-gnome-zh-hant firefox-locale-zh-hant libreoffice-l10n-zh-tw
@@ -85,6 +101,12 @@ ARG TINI_VERSION=v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-{{arch}} /bin/tini
 RUN chmod +x /bin/tini
 
+# vim
+RUN apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated \
+        vim \
+        git
+
 # ffmpeg
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
@@ -93,13 +115,32 @@ RUN apt update \
     && mkdir /usr/local/ffmpeg \
     && ln -s /usr/bin/ffmpeg /usr/local/ffmpeg/ffmpeg
 
+# dotnet
+RUN apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated \
+        wget
+
+RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+    && dpkg -i packages-microsoft-prod.deb \
+    && rm packages-microsoft-prod.deb \
+    && add-apt-repository universe \
+    && apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated apt-transport-https \
+    && apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated dotnet-sdk-3.0
+
+# slack
+RUN wget https://downloads.slack-edge.com/linux_releases/slack-desktop-4.0.2-amd64.deb \
+    && apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated ./slack-desktop-*.deb \
+    && rm ./slack-desktop-*.deb
 
 # python library
 COPY rootfs/usr/local/lib/web/backend/requirements.txt /tmp/
 RUN apt-get update \
     && dpkg-query -W -f='${Package}\n' > /tmp/a.txt \
     && apt-get install -y python-pip python-dev build-essential \
-	&& pip install setuptools wheel && pip install -r /tmp/requirements.txt \
+    && pip install setuptools wheel && pip install -r /tmp/requirements.txt \
     && dpkg-query -W -f='${Package}\n' > /tmp/b.txt \
     && apt-get remove -y `diff --changed-group-format='%>' --unchanged-group-format='' /tmp/a.txt /tmp/b.txt | xargs` \
     && apt-get autoclean -y \
@@ -149,7 +190,7 @@ LABEL maintainer="fcwu.tw@gmail.com"
 COPY --from=builder /src/web/dist/ /usr/local/lib/web/frontend/
 COPY rootfs /
 RUN ln -sf /usr/local/lib/web/frontend/static/websockify /usr/local/lib/web/frontend/static/novnc/utils/websockify && \
-	chmod +x /usr/local/lib/web/frontend/static/websockify/run
+    chmod +x /usr/local/lib/web/frontend/static/websockify/run
 
 EXPOSE 80
 WORKDIR /root
