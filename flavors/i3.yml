@@ -1,5 +1,4 @@
 ---
 addon_packages:
-  - vim-tiny
   - firefox
 desktop: i3

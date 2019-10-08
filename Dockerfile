@@ -29,7 +29,7 @@ RUN add-apt-repository -y ppa:fcwu-tw/apps \
     && apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
         xvfb x11vnc=$X11VNC_VERSION \
-        vim-tiny firefox  \
+        firefox  \
     && add-apt-repository -r ppa:fcwu-tw/apps \
     && apt autoclean -y \
     && apt autoremove -y \
@@ -104,6 +104,11 @@ RUN wget https://downloads.slack-edge.com/linux_releases/slack-desktop-4.0.2-amd
     && apt install -y --no-install-recommends --allow-unauthenticated ./slack-desktop-*.deb \
     && rm ./slack-desktop-*.deb
 
+# docker
+RUN apt update \
+    && apt install -y --no-install-recommends --allow-unauthenticated \
+        docker.io
+
 # python library
 COPY rootfs/usr/local/lib/web/backend/requirements.txt /tmp/
 RUN apt-get update \
@@ -150,7 +155,7 @@ RUN cd /src/web \
 # merge
 ################################################################################
 FROM system
-LABEL maintainer="fcwu.tw@gmail.com"
+LABEL maintainer="nathanmentley@gmail.com"
 
 COPY --from=builder /src/web/dist/ /usr/local/lib/web/frontend/
 COPY rootfs /

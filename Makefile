@@ -26,6 +26,7 @@ run:
 		-p 6080:80 -p 6081:443 \
 		-v ${PWD}:/src:ro \
 		-v ${PWD}/home:/home/nmentley \
+		-v //var/run/docker.sock:/var/run/docker.sock \
 		-e USER=nmentley -e PASSWORD=$(PASSWORD) \
 		-e ALSADEV=hw:2,0 \
 		-e SSL_PORT=443 \
