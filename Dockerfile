@@ -127,7 +127,8 @@ RUN apt update \
 # docker
 RUN apt update \
     && apt install -y --no-install-recommends --allow-unauthenticated \
-        docker.io
+        docker.io \
+        docker-compose
 
 # python library
 COPY rootfs/usr/local/lib/web/backend/requirements.txt /tmp/
